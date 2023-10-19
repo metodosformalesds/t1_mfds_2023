@@ -36,3 +36,15 @@ class Carrito_item(models.Model):
 
     def __str__(self) -> str:
         return f"Id: {self.pk} | Producto: {self.producto.titulo} | Carrito_id: {self.carrito.id}"
+    
+    
+    
+class empleados(models.Model):
+    Nombre= models.CharField(max_length=50)
+    puesto=models.CharField(max_length=50)
+    sueldo=models.IntegerField()
+    def __str__(self) :
+        return f"Id: {self.pk} | Nombre: {self.Nombre} | puesto: {self.puesto} | sueldo: {self.sueldo}"
+
+
+    

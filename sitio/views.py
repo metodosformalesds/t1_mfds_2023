@@ -7,6 +7,7 @@ from django.http.response import HttpResponse
 from sitio.models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.db.models import Q
 """ 
     REGISTRO DE USUARIO
 """
@@ -207,5 +208,20 @@ def acerca_de(request):
     return render(request, 'sitio/paginas/acerca_de.html',{
         'categorias' : Categoria.objects.all(),
     })
+    
+    
+def nomina(request):
+    datos = empleados.objects.all()
+    query=request.GET.get("buscar")
+    if query:
+        datos=empleados.objects.filter(
+            Q(Nombre__icontains=query)|
+            Q(puesto__icontains=query)|
+            Q(sueldo__icontains=query)
+        
+    
+        ).distinct()
+    return render(request, 'sitio/nominas/nomina.html',{'datos': datos})
+    
 
 
