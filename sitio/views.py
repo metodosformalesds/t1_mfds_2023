@@ -222,6 +222,23 @@ def nomina(request):
     
         ).distinct()
     return render(request, 'sitio/nominas/nomina.html',{'datos': datos})
+
+
+def prestamo(request):
+    dat = prestamos.objects.all()
+
     
+    QP = request.GET.get("prestamo")
+    if QP:
+        dat = prestamos.objects.filter(
+            
+            Q(Monto__icontains=QP)
+        ).distinct()
+        
+        dat = prestamos.objects.select_related('Carrito').all()
+        
+        
+        
+    return render(request, 'sitio/prestamos/prestamos.html',{'dat': dat})
 
 

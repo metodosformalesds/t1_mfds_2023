@@ -29,6 +29,9 @@ urlpatterns = [
     
     #NOMINA
     path('nomina/', views.nomina, name="nomina"),
+
+    #prestamo
+    path('prestamos/', views.prestamo,name='prestamos')
     
     
 

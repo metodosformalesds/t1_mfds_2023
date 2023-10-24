@@ -47,4 +47,14 @@ class empleados(models.Model):
         return f"Id: {self.pk} | Nombre: {self.Nombre} | puesto: {self.puesto} | sueldo: {self.sueldo}"
 
 
+class prestamos(models.Model):
+    Monto = models.IntegerField()
+    TipoPago = models.CharField(max_length=90)
+    FechaLimite = models.DateField()
+    prestamo=models.ForeignKey(Carrito, null=True,blank=True,on_delete=models.CASCADE)
+  
+    
+
+    def __str__(self) :
+        return f"Id: {self.pk} | Monto: {self.Monto} | TipoPago: {self.TipoPago} | FechaLimite: {self.FechaLimite}"
     

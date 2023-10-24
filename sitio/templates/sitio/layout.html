@@ -38,6 +38,9 @@
                 <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:nomina'%}">
                     Nominas
                 </a>
+                <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:prestamos'%}">
+                    Prestamos
+                </a>
                 {% endif %}
                 {% if user.is_authenticated %}
                 <!-- Estas conectado como: { { user.get_username } }  -->
@@ -63,6 +66,7 @@
                     </a>
                 {% endif %}
             </div>
+
 
         </div>
     </header>
