@@ -1,0 +1,89 @@
+{% extends 'registration/layout.html' %} {% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    th,
+    td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    .custom-button {
+        background-color: #007bff;
+        /* Color de fondo azul */
+        color: white;
+        /* Color del texto blanco */
+        border: none;
+        /* Sin borde */
+        padding: 10px 20px;
+        /* Relleno interno */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        cursor: pointer;
+        /* Cambio de cursor al pasar el mouse */
+        display: block;
+        margin: 0 auto;
+        /* Centrar horizontalmente */
+    }
+    
+    .custom-button:hover {
+        background-color: #0056b3;
+        /* Cambio de color de fondo al pasar el mouse */
+    }
+</style>
+<div class="row">
+
+
+
+    <!-- TITULO -->
+    <div class="col-12 mb-3">
+        <h1 class="text-uppercase text-center display-4 title-form-register">PAGOS DE NOMINA</h1>
+
+        <form method="GET">
+
+
+
+
+            <input type="text" name="buscar" placeholder="Buscar..." value="{{ request.GET.buscar }}">
+
+
+
+            <button type="submit">Buscar empleados</button>
+
+
+
+
+        </form>
+        <table>
+            <tr>
+                <th>Nombre del empleado</th>
+                <th>Puesto que ejerce</th>
+                <th>Sueldo</th>
+            </tr>
+            {% for dato in datos %}
+            <tr>
+                <td>{{ dato.Nombre }}</td>
+                <td>{{ dato.puesto }}</td>
+                <td>{{dato.sueldo}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+        <button class="custom-button">Pagar</button>
+    </div>
+
+
+
+
+
+</div>
+{% endblock %}
