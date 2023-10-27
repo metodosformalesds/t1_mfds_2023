@@ -32,6 +32,7 @@ urlpatterns = [
 
     #prestamo
     path('prestamos/', views.prestamo,name='prestamos'),
+    path('SolicitarPrestamo/', views.SolicitarPrestamo,name='Solicitar'),
     
     #carrito
     path('Pago/', views.proceso_pago, name="Pago"),

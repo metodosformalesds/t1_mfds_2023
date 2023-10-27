@@ -50,3 +50,7 @@ class PaymentForm(forms.Form):
         # Puedes agregar validaciones personalizadas aquí si es necesario
 
         return cleaned_data
+    
+    
+class SolicitarPrestamo(forms.Form):
+    DineroProporcionado= forms.IntegerField(label="Cuanto quieres que te prestemos?")

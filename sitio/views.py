@@ -247,6 +247,9 @@ def prestamo(request):
         
         
     return render(request, 'sitio/prestamos/prestamos.html',{'dat': dat})
+def SolicitarPrestamo(request):
+   
+    return render(request, 'sitio/prestamos/SolicitarPrestamo.html')
 
 def proceso_pago(request):
     

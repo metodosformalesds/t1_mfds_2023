@@ -1,0 +1,65 @@
+{% extends 'registration/layout.html' %} {% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    th,
+    td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    .custom-button {
+        background-color: #007bff;
+        /* Color de fondo azul */
+        color: white;
+        /* Color del texto blanco */
+        border: none;
+        /* Sin borde */
+        padding: 10px 20px;
+        /* Relleno interno */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        cursor: pointer;
+        /* Cambio de cursor al pasar el mouse */
+        display: block;
+        margin: 0 auto;
+        /* Centrar horizontalmente */
+    }
+    h1{
+        text-align: center;
+    }
+    
+    .custom-button:hover {
+        background-color: #0056b3;
+        /* Cambio de color de fondo al pasar el mouse */
+    }
+
+</style>
+
+
+<div  method="post" >
+
+    <h1 class="text-uppercase text-center display-4 title-form-register">Solicitar Prestamo</h1>
+    
+    <form>
+
+       <label>Cuanto quieres de prestamo?</label> {{form.DineroProporcionado}}
+       <button class="custom-button";>Nuevo prestamo</button>
+    
+
+    </form>
+
+  
+
+
+</div>
+
+{% endblock %}
