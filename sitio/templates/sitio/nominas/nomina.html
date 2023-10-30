@@ -56,30 +56,38 @@
 
 
 
-            <button type="submit">Buscar empleados</button>
+            <button type="submit" style="background-color: #007bff; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">Buscar empleados</button>
 
 
 
 
         </form>
-        <table>
+        <form method="post" action="{% url 'SITIO:nomina' %}">
+        {% csrf_token %}
+
+           <table>
             <tr>
+                <th></th>
                 <th>Nombre del empleado</th>
                 <th>Puesto que ejerce</th>
                 <th>Sueldo</th>
             </tr>
             {% for dato in datos %}
             <tr>
+                <td> <input type="checkbox" name="datos" value="{{ dato.id }} "> </td>
                 <td>{{ dato.Nombre }}</td>
                 <td>{{ dato.puesto }}</td>
                 <td>{{dato.sueldo}}</td>
             </tr>
             {% endfor %}
-        </table>
+            </table>
+             <input type="submit" style="background-color: #007bff; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer;" value="Seleccionar elementos">
 
 
-        <button class="custom-button">Pagar</button>
-    </div>
+       
+         </form>
+    
+        
 
 
 

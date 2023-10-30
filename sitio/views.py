@@ -9,7 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render
-from .forms import PaymentForm
+from .forms import PaymentForm, TransferForm
 
 
 
@@ -217,8 +217,9 @@ def acerca_de(request):
     })
     
     
-def nomina(request):
+def nominas(request):
     datos = empleados.objects.all()
+ 
     query=request.GET.get("buscar")
     if query:
         datos=empleados.objects.filter(
@@ -228,7 +229,43 @@ def nomina(request):
         
     
         ).distinct()
-    return render(request, 'sitio/nominas/nomina.html',{'datos': datos})
+    
+  
+    if request.method == 'POST':
+         
+        
+        # Obten los datos enviados en el formulario (suponiendo que 'datos' es una lista de nombres)
+         datos  = request.POST.getlist('datos')
+         datos = datos[0]
+      
+    
+    # Realiza la consulta filtrando por los nombres en la lista 'datos'
+         datos = empleados.objects.filter(id=datos)
+
+         return render(request, 'sitio/nominas/transferenciaNomina.html', {'datos': datos})
+    else:
+       
+        return render(request, 'sitio/nominas/nomina.html', {'datos': datos})
+        
+   
+
+def SolicitarNomina(request):
+    if request.method == 'POST':
+        form = TransferForm(request.POST)
+       
+
+    return render(request, 'sitio/nominas/TransferenciaNomina.html', {'form': form, 'datos': datos})
+    
+   
+   
+    
+      
+      
+    
+   
+   
+    
+    
 
 
 def prestamo(request):

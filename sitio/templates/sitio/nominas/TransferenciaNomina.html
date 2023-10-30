@@ -1,0 +1,28 @@
+{% extends 'registration/layout.html' %} {% block content %}
+
+
+<!-- En otro_template.html -->
+
+    
+
+<div style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #f7f7f7; border: 1px solid #ccc; border-radius: 5px; box-shadow: 2px 2px 5px #888;">
+    <h2>Datos del empleado:</h2>
+    <ul style="list-style: none; padding: 0;">
+        {% for dato in datos %}
+            <li style="margin-bottom: 20px; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                <strong>Nombre del empleado:</strong> {{ dato.Nombre }}<br>
+                <strong>Puesto que proporciona:</strong> {{ dato.puesto }}<br>
+                <strong>Sueldo a pagar:</strong> {{ dato.sueldo }}<br>
+            </li>
+        {% endfor %}
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Transferir" style="background-color: #007bff; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">
+    </form>
+</div>
+
+{% endblock %}
+
+

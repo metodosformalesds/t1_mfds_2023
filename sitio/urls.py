@@ -28,7 +28,8 @@ urlpatterns = [
     
     
     #NOMINA
-    path('nomina/', views.nomina, name="nomina"),
+    path('nomina/', views.nominas, name="nomina"),
+    path('transferenciaNomina/', views.SolicitarNomina,name="transferenciaNomina"),
 
     #prestamo
     path('prestamos/', views.prestamo,name='prestamos'),
