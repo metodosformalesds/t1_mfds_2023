@@ -1,5 +1,6 @@
 {% extends "registration/layout.html" %}
-
+{% load socialaccount %}
+{% providers_media_js %}
 {% block content %}
 
 <div class="row my-sm-3  my-md-5 py-sm-3 py-md-5">
@@ -48,6 +49,14 @@
       <div class="col-4 col-md-4 col-lg-3 ">
         <a href="{% url 'SITIO:register' %}" class="btn btn-secondary btn-block text-uppercase">Registrarse</a>
       </div>
+      <button class="btn btn-outline-info">
+        
+        <a href="{% provider_login_url 'google' %}?next=/">
+          <i class="fab fa-google"></i>
+          Iniciar sesión con Google
+      </a>
+    </button>
+
     </div>
 
   </form>
