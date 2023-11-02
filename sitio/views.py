@@ -11,8 +11,9 @@ from django.db.models import Q
 from django.shortcuts import render
 from .forms import PaymentForm, TransferForm
 
-
-
+from allauth.account.decorators import login_required
+from django.db.models import Sum
+from decimal import Decimal
 
 
 """ 
@@ -139,22 +140,28 @@ def productos_por_categoria(request, categoria_id):
 """ 
     CARRITO
 """
+@login_required
 def carrito_index(request):
     categorias = Categoria.objects.all()
-    usuario_logeado = User.objects.get(username=request.user)
-    productos = Carrito.objects.get(usuario=usuario_logeado.id).items.all()
+    usuario_logeado = request.user
 
-    carrito = Carrito.objects.get(usuario=usuario_logeado.id)
-    nuevo_precio_Carrito = 0
-    for item in carrito.items.all():
-        nuevo_precio_Carrito += item.producto.precio
-    carrito.total = nuevo_precio_Carrito
-    carrito.save()
+    try:
+        carrito = Carrito.objects.get(usuario=usuario_logeado)
+        items_carrito = carrito.items.all()
+        nuevo_precio_Carrito = items_carrito.aggregate(total=Sum('producto__precio'))['total']
+    except Carrito.DoesNotExist:
+        carrito = None
+        items_carrito = []
+        nuevo_precio_Carrito = 0
+
+    if carrito:
+        carrito.total = nuevo_precio_Carrito
+        carrito.save()
 
     return render(request, 'sitio/carrito/index.html', {
-        'categorias' : categorias,
-        'usuario' : usuario_logeado,
-        'items_carrito' : productos
+        'categorias': categorias,
+        'usuario': usuario_logeado,
+        'items_carrito': items_carrito
     })
 
 def carrito_save(request):
@@ -162,34 +169,45 @@ def carrito_save(request):
     # Devuelve un 404 si no encuentra el carrito
     #arrito = get_object_or_404(Carrito, usuario=usuario_logeado.id)
 
-    if request.method == 'POST':
-        producto = Producto.objects.get(id=request.POST['producto_id'])
-        usuario_logeado = User.objects.get(username=request.user)
+    usuario_logeado = request.user
+    producto_id = request.POST.get('producto_id')
+    
+    if not producto_id:
+        return redirect("SITIO:producto_index")
+    
+    producto = get_object_or_404(Producto, pk=producto_id)
 
-        # Agrego producto al carrito
-        carrito = Carrito.objects.get(usuario=usuario_logeado.id)
-        item_carrito = Carrito_item()
-        item_carrito.carrito = carrito
-        item_carrito.producto = producto
-        item_carrito.save()
+    try:
+        carrito = Carrito.objects.get(usuario=usuario_logeado)
+    except Carrito.DoesNotExist:
+        carrito = Carrito.objects.create(usuario=usuario_logeado, total=Decimal('0.00'))
 
-        # Sumo el precio del producto al carrito
-        carrito.total = producto.precio + carrito.total
+    item_carrito, created = Carrito_item.objects.get_or_create(carrito=carrito, producto=producto)
+
+    if carrito.total is None:
+        carrito.total = Decimal('0.00')
+
+    if created:
+        carrito.total += producto.precio
         carrito.save()
         messages.success(request, f"El producto {producto.titulo} fue agregado al carrito")
-        #return HttpResponse(f"{usuario_logeado.id} | ITEM_CARRITO: {item_carrito} | CARRITO: {carrito}")
-        return redirect("SITIO:producto_index")
-
     else:
-        return redirect("SITIO:producto_index")
+        messages.warning(request, f"El producto {producto.titulo} ya está en el carrito")
+
+    return redirect("SITIO:producto_index")
 
 def carrito_clean(request):
-    usuario_logeado = User.objects.get(username=request.user)
-    carrito = Carrito.objects.get(usuario=usuario_logeado.id)
+    usuario_logeado = request.user
+
+    try:
+        carrito = Carrito.objects.get(usuario=usuario_logeado)
+    except Carrito.DoesNotExist:
+        carrito = Carrito.objects.create(usuario=usuario_logeado, total=0)  # Inicializar total a 0
+
     carrito.items.all().delete()
     carrito.total = 0
     carrito.save()
-    #return HttpResponse(f'Carrito: id({carrito.id}) ${carrito.total} | Usuario: id({usuario_logeado.id}) {usuario_logeado.username} | items_carrito: {carrito.items.all().count()}')
+
     return redirect('SITIO:carrito_index')
 
 def item_carrito_delete(request, item_carrito_id):

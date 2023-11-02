@@ -27,7 +27,9 @@ class Producto(models.Model):
 
 class Carrito(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name="carrito")
-    total = models.DecimalField(null=False, max_digits=10, decimal_places=2)
+    ##total = models.DecimalField(null=False, max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+
 
     def __str__(self) -> str:
         return f"Id: {self.pk} | Usuario_id: {self.usuario.id} | Usuario: {self.usuario.username} | Total: {self.total}"
