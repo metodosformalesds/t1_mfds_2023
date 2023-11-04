@@ -24,7 +24,7 @@
 <body>
 
     <!-- HEADER -->
-    <header class="bg-light">
+    <header class="bg-light" >
         <div class="container d-flex py-2">
             
             <a class="m-0 p-0 text-dark nav-logo" href="/">
@@ -46,9 +46,7 @@
 
                 
                
-                <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:prestamos'%}">
-                    Prestamos
-                </a>
+               
                 {% endif %}
                 {% if user.is_authenticated %}
                 <!-- Estas conectado como: { { user.get_username } }  -->

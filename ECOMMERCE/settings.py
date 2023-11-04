@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'googleauthentication',
+    'paypal.standard.ipn',
 ]
 SITE_ID=1
 SOCIALACCOUNT_LOGIN_ON_GET=True
@@ -149,3 +150,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Direccion de la imagen en mi proy
 LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 ACCOUNT_EMAIL_REQUIRED=True
+
+
+PAYPAL_RECEIVER_EMAIL='sb-irmbi15185740@business.example.com'
+PAYPAL_TEST=True
+PAYPAL_CLIENT_ID = 'Abms-FaN27UfK2It8PnjxjC80S_yaiESxfsUQ7DaVoN0TsY9yMWmtiaubZ0tQ9m76MBNjaQK9K4ECi6i'
+PAYPAL_CLIENT_SECRET = 'EBVsXrph1PEZAjQ8CgJEVYa-pXh8Ro8vYPnerZYrYjFu6L23nKCAn-Hj9w0w7_oCi8TLllvAidlVx4yX'

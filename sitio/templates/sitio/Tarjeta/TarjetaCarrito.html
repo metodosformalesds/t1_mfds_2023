@@ -96,6 +96,7 @@
                         </p>
                     </div>
                 {% endfor %}
+                {{paypal.render}}
     
                
             </div>
@@ -106,6 +107,7 @@
 
 
     <!-- TITULO -->
+    
 
     <form method="post" class="payment-form">
         {% csrf_token %}
@@ -122,7 +124,10 @@
             <label for="id_codigo_seguridad">Código de seguridad (CVC, ejemplo: 123)</label> {{ form.codigo_seguridad }}
         </div>
         <button type="submit" class="btn btn-primary">Procesar Pago</button>
+       
+    
     </form>
+    
 
 
 

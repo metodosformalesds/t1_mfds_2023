@@ -53,7 +53,8 @@ class PaymentForm(forms.Form):
     
     
 class SolicitarPrestamo(forms.Form):
-    DineroProporcionado= forms.IntegerField(label="Cuanto quieres que te prestemos?")
+    DineroProporcionado=forms.IntegerField(label="Cuanto quieres que te prestemos?")
+    
     
 class TransferForm(forms.Form):
     empleado = forms.CharField(max_length=100, label="Nombre del empleado")

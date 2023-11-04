@@ -40,5 +40,6 @@ urlpatterns = [
     path('Pago/', views.proceso_pago, name="Pago"),
     
     
+    
 
 ]

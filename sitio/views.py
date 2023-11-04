@@ -15,6 +15,12 @@ from allauth.account.decorators import login_required
 from django.db.models import Sum
 from decimal import Decimal
 
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+import uuid
+from django.urls import reverse
+import paypalrestsdk
+from django.http import JsonResponse
 
 """ 
     REGISTRO DE USUARIO
@@ -238,15 +244,8 @@ def acerca_de(request):
 def nominas(request):
     datos = empleados.objects.all()
  
-    query=request.GET.get("buscar")
-    if query:
-        datos=empleados.objects.filter(
-            Q(Nombre__icontains=query)|
-            Q(puesto__icontains=query)|
-            Q(sueldo__icontains=query)
-        
     
-        ).distinct()
+
     
   
     if request.method == 'POST':
@@ -274,17 +273,6 @@ def SolicitarNomina(request):
 
     return render(request, 'sitio/nominas/TransferenciaNomina.html', {'form': form, 'datos': datos})
     
-   
-   
-    
-      
-      
-    
-   
-   
-    
-    
-
 
 def prestamo(request):
     dat = prestamos.objects.all()
@@ -303,8 +291,12 @@ def prestamo(request):
         
     return render(request, 'sitio/prestamos/prestamos.html',{'dat': dat})
 def SolicitarPrestamo(request):
+    
+    datos = empleados.objects.all()
+    
+    dat=empleados.objects.select_related('Carrito').all()
    
-    return render(request, 'sitio/prestamos/SolicitarPrestamo.html')
+    return render(request, 'sitio/prestamos/SolicitarPrestamo.html',{'dat':dat})
 
 def proceso_pago(request):
     
@@ -327,8 +319,22 @@ def proceso_pago(request):
         nuevo_precio_Carrito += item.producto.precio
     carrito.total = nuevo_precio_Carrito
     carrito.save()
+    host= request.get_host()
+    paypal_checkout={
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount':Producto.precio,
+        'item_name': Producto.titulo,
+        'invoice':uuid.uuid4(),
+        'currency_code': 'USD',
+        'notify_url': f"https://{host}{reverse('paypal-ipn')}"
+        
+    }
+    paypal_payment=PayPalPaymentsForm(initial=paypal_checkout)
+    
+
+
   
 
    
 
-    return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', {'form': form,'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos})
+    return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', {'form': form,'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos,'paypal':paypal_payment})
