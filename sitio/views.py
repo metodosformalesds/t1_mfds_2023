@@ -9,7 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render
-from .forms import PaymentForm, TransferForm
+from .forms import PaymentForm, TransferForm,EmpleadoForm
 
 from allauth.account.decorators import login_required
 from django.db.models import Sum
@@ -20,6 +20,7 @@ from django.conf import settings
 import uuid
 from django.urls import reverse
 import paypalrestsdk
+from datetime import datetime
 from django.http import JsonResponse
 
 """ 
@@ -272,15 +273,52 @@ def SolicitarNomina(request):
     return render(request, 'sitio/nominas/TransferenciaNomina.html', {'form': form})
     
 
+def Aceptarprestamo(request):
+     datos = prestamos.objects.all()
+     
 
+     if request.method == 'POST':
+         
+        
+        # Obten los datos enviados en el formulario (suponiendo que 'datos' es una lista de nombres)
+         datos  = request.POST.getlist('datos')
+         datos = datos[0]
+      
+    
+    # Realiza la consulta filtrando por los nombres en la lista 'datos'
+         datos = prestamos.objects.filter(id=datos)
+
+         return render(request, 'sitio/prestamos/transferenciaPrestamo.html', {'datos': datos})
+     else:
+       
+        return render(request, 'sitio/prestamos/prestamos.html', {'datos': datos})
+        
+        
+def transferenciaPrestamo(request):
+    if request.method == 'POST':
+        form = EmpleadoForm(request.POST)
+    return render(request, 'sitio/nominas/transferenciaPrestamo.html', {'form': form})
+    
 def SolicitarPrestamo(request):
     
-    datos = empleados.objects.all()
-    
-    dat=empleados.objects.select_related('Carrito').all()
-   
-    return render(request, 'sitio/prestamos/SolicitarPrestamo.html',{'dat':dat})
+    if request.method == 'POST':
+        Monto = request.POST['Monto']
+      
+        FechaLimite = request.POST['FechaLimite']
+        
+        # Convierte la fecha a un objeto Date
+        fecha_limite = datetime.strptime(FechaLimite, '%Y-%m-%d').date()
 
+        
+
+        prestamo = prestamos(Monto=Monto,FechaLimite=fecha_limite)
+        prestamo.save()  # Guarda los datos en la base de datos
+        return redirect('SITIO:Prestamosolicitado')  # Redirige a la página que desees después de guardar el préstamo
+
+    return render(request, 'sitio/prestamos/SolicitarPrestamo.html')
+
+def Prestamosolicitado(request):
+    return render(request,'sitio/prestamos/prestamoSolicitado.html')
 def proceso_pago(request):
     
     if request.method == 'POST':

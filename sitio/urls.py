@@ -33,8 +33,10 @@ urlpatterns = [
     path('transferenciaNomina/', views.SolicitarNomina,name="transferenciaNomina"),
 
     #prestamo
- 
+    path('Prestamos/', views.Aceptarprestamo,name='Aceptar'),
     path('SolicitarPrestamo/', views.SolicitarPrestamo,name='Solicitar'),
+    path('transferenciaPrestamo/', views.transferenciaPrestamo,name="transferenciaPrestamo"),
+    path('prestamoSolicitado/', views.Prestamosolicitado,name="Prestamosolicitado"),
     
     #carrito
     path('Pago/', views.proceso_pago, name="Pago"),

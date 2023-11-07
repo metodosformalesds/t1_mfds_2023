@@ -1,6 +1,6 @@
 from django import forms
 from django.db.models import fields
-from .models import Producto
+from .models import Producto, prestamos
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from creditcards.forms import CardNumberField, CardExpiryField, SecurityCodeField
@@ -51,9 +51,16 @@ class PaymentForm(forms.Form):
 
         return cleaned_data
     
+class EmpleadoForm(forms.ModelForm):
     
-class SolicitarPrestamo(forms.Form):
-    DineroProporcionado=forms.IntegerField(label="Cuanto quieres que te prestemos?")
+    Monto = forms.CharField(max_length=100, label="Monto solicitado")
+    TipoPago = forms.IntegerField(label="Sueldo a pagar")
+    class Meta:
+        model = prestamos
+        fields = [ 'Monto', 'TipoPago']
+        
+       
+  
     
     
 class TransferForm(forms.Form):

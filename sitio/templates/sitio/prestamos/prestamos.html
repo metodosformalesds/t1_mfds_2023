@@ -1,0 +1,101 @@
+{% extends 'registration/layout.html' %} {% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    th,
+    td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    .custom-button {
+        background-color: #007bff;
+        /* Color de fondo azul */
+        color: white;
+        /* Color del texto blanco */
+        border: none;
+        /* Sin borde */
+        padding: 10px 20px;
+        /* Relleno interno */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        cursor: pointer;
+        /* Cambio de cursor al pasar el mouse */
+        display: block;
+        margin: 0 auto;
+        /* Centrar horizontalmente */
+    }
+    
+    .custom-button:hover {
+        background-color: #0056b3;
+        /* Cambio de color de fondo al pasar el mouse */
+    }
+</style>
+<script>
+    document.getElementById('mi_checkbox').addEventListener('change', function() {
+      var boton = document.getElementById('mi_boton');
+      if (this.checked) {
+        boton.removeAttribute('disabled');
+      } else {
+        boton.setAttribute('disabled', true);
+      }
+    });
+  </script>
+<div class="row">
+
+
+
+    <!-- TITULO -->
+    <div class="col-12 mb-3">
+        <h1 class="text-uppercase text-center display-4 title-form-register">Prestamos Solicitados</h1>
+
+       
+        <form method="post" action="{% url 'SITIO:Aceptar' %}">
+            {% csrf_token %}
+            <table>
+              <tr>
+                <th></th>
+                <th>Monto</th>
+               
+                <th>Fecha limite</th>
+              </tr>
+              {% for dato in datos %}
+              <tr>
+                <td> <input type="radio" name="datos" value="{{ dato.id }}"> </td>
+                <td>{{ dato.Monto }}</td>
+                <td>{{ dato.FechaLimite }}</td>
+          
+              {% endfor %}
+            </table>
+            <input type="submit" style="background-color: #007bff; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer;" value="Seleccionar elementos" disabled>
+          </form>
+          
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const radioButtons = document.querySelectorAll('input[type="radio"]');
+              const submitButton = document.querySelector('input[type="submit"]');
+              
+              radioButtons.forEach(function (radioButton) {
+                radioButton.addEventListener('change', function () {
+                  submitButton.disabled = !Array.from(radioButtons).some((radio) => radio.checked);
+                });
+              });
+            });
+          </script>
+    
+        
+
+
+
+
+
+</div>
+{% endblock %}
