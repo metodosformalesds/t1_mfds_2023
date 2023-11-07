@@ -33,7 +33,7 @@ urlpatterns = [
     path('transferenciaNomina/', views.SolicitarNomina,name="transferenciaNomina"),
 
     #prestamo
-    path('prestamos/', views.prestamo,name='prestamos'),
+ 
     path('SolicitarPrestamo/', views.SolicitarPrestamo,name='Solicitar'),
     
     #carrito

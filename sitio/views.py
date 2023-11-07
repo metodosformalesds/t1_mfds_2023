@@ -269,27 +269,10 @@ def nominas(request):
 def SolicitarNomina(request):
     if request.method == 'POST':
         form = TransferForm(request.POST)
-       
-
-    return render(request, 'sitio/nominas/TransferenciaNomina.html', {'form': form, 'datos': datos})
+    return render(request, 'sitio/nominas/TransferenciaNomina.html', {'form': form})
     
 
-def prestamo(request):
-    dat = prestamos.objects.all()
 
-    
-    QP = request.GET.get("prestamo")
-    if QP:
-        dat = prestamos.objects.filter(
-            
-            Q(Monto__icontains=QP)
-        ).distinct()
-        
-        dat = prestamos.objects.select_related('Carrito').all()
-        
-        
-        
-    return render(request, 'sitio/prestamos/prestamos.html',{'dat': dat})
 def SolicitarPrestamo(request):
     
     datos = empleados.objects.all()
