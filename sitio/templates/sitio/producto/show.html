@@ -36,10 +36,11 @@
                         {% csrf_token %}
                         <input type="hidden" name="producto_id" value="{{ producto.id }}">
                         {% if user.is_superuser or not user.is_authenticated %}
-                            <button type="submit" class="btn btn-success" disabled>Agregar al carrito</button>
-                        {% else %}
-                            <button type="submit" class="btn btn-success">Agregar al carrito</button>
-                        {% endif %}
+                        <button type="submit" class="btn btn-info" disabled>Agregar al carrito</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-info">Agregar al carrito</button>
+                    {% endif %}
+                    
                     </form>
                 </div>
             </div>

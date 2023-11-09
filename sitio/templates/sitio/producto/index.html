@@ -1,7 +1,30 @@
 {% extends "sitio/layout.html" %}
 
 {% block content %}
+<style>
+    .card-img-producto-home {
+        transition: transform 0.3s;
+    }
 
+    .card-img-producto-home:hover {
+        transform: scale(1.05);
+    }
+    .card-img-3-producto-home{
+        transition: transform 0.3s;
+    }
+    .card-img-3-producto-home:hover{
+        transform: scale(1.05);
+    }
+
+    /* Clase para aplicar la animación a todas las imágenes */
+    .animated-img {
+        transition: transform 0.3s;
+    }
+
+    .animated-img:hover {
+        transform: scale(1.05);
+    }
+</style>
     <!-- ULTIMOS 3 PRODUCTOS -->
     <section class="row">
 
@@ -23,29 +46,25 @@
 
         <!-- PRODUCTOS -->
         {% for producto in productos_top3 %}
-            <div class="col-12 col-sm-6 col-md-4 mb-3">
-                <div class="card card-img-3-producto-home">
-                    <div class=" h-100 ">
-                        <!-- src="https://picsum.photos/200/200?random={{ forloop.counter }}" -->
-                        <img 
-                        class="card-img-top mx-auto"
-                        src="{{MEDIA_URL}}{{producto.imagen.url}}"
-                        alt="{{producto.titulo}}"
-                        >
-                    </div>
-                    <div class="card-body card-body-3-productos-home">
-                        <h4 class="card-title text-truncate">{{ producto.titulo.title.title|truncatechars:25 }}</h4>
-                        <p class="card-text ">{{ producto.descripcion.capitalize|truncatechars:70 }}</p>
-                        <a href="{% url 'SITIO:producto_show' producto.id %}" class="btn btn-success btn-block">Ver</a>
-                        
-                        {% if user.is_superuser %}
-                            <a href="{% url 'SITIO:producto_edit' producto.id %}" class="btn btn-outline-secondary btn-block">Editar</a>
-                            <a href="{% url 'SITIO:producto_delete' producto.id %}" class="btn btn-outline-danger btn-block">Eliminar</a>
-                        {% endif %}
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card card-img-3-producto-home custom-card">
+                <div class=" h-100">
+                    <img class="card-img-top mx-auto" src="{{MEDIA_URL}}{{producto.imagen.url}}" alt="{{producto.titulo}}">
+                </div>
+                <div class="card-body card-body-3-productos-home">
+                    <h4 class="card-title text-truncate">{{ producto.titulo.title.title|truncatechars:25 }}</h4>
+                    <p class="card-text">{{ producto.descripcion.capitalize|truncatechars:70 }}</p>
+                    <a href="{% url 'SITIO:producto_show' producto.id %}" class="btn btn-info btn-block">Ver</a>
 
-                    </div>
+                    
+                    {% if user.is_superuser %}
+                        <a href="{% url 'SITIO:producto_edit' producto.id %}" class="btn btn-outline-secondary btn-block">Editar</a>
+                        <a href="{% url 'SITIO:producto_delete' producto.id %}" class "btn btn-outline-danger btn-block">Eliminar</a>
+                    {% endif %}
                 </div>
             </div>
+        </div>
+        
         {% endfor %}
     </section>
 
@@ -72,7 +91,8 @@
                         <div class="card-body text-center">
                             <h4 class="card-title">{{ producto.titulo.title|truncatechars:28 }}</h4>
                             <p class="card-text ">{{ producto.descripcion.capitalize|truncatechars:50 }}</p>
-                            <a href="{% url 'SITIO:producto_show' producto.id %}" class="btn btn-success btn-block">Ver</a>
+                            <a href="{% url 'SITIO:producto_show' producto.id %}" class="btn btn-info btn-block">Ver</a>
+
 
                             {% if user.is_superuser %}
                                 <a href="{% url 'SITIO:producto_edit' producto.id %}" class="btn btn-outline-secondary btn-block">Editar</a>
