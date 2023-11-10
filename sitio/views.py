@@ -353,9 +353,13 @@ def proceso_pago(request):
     paypal_payment=PayPalPaymentsForm(initial=paypal_checkout)
     
 
-
-  
-
-   
-
     return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', {'form': form,'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos,'paypal':paypal_payment})
+
+
+
+def RecuperarContraseña(request):
+    
+    
+    
+    return render(request,'templates/registration/password_reset_form.html')
+    

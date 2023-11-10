@@ -6,6 +6,7 @@ urlpatterns = [
     # REGISTRAR USUARIO
        
        path('registrarse/', views.register, name="register"),
+       path('olvidar/', views.RecuperarContraseña, name="olvidar"),
 
 
     # ACERCA DE
