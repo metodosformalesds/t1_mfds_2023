@@ -56,7 +56,7 @@ class prestamos(models.Model):
     
     
     
-    
+    nombre=models.CharField(max_length=100,default='Nombre predeterminado')
     Monto = models.IntegerField()
     TipoPago = models.CharField(max_length=90)
     FechaLimite = models.DateField()

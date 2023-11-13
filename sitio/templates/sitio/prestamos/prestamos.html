@@ -45,36 +45,36 @@
 
     <!-- TITULO -->
     <div class="col-12 mb-3">
-        <h1 class="text-uppercase text-center display-4 title-form-register">Prestamos Solicitados</h1>
-
-       
-        <form method="post" action="{% url 'SITIO:Aceptar' %}">
-            {% csrf_token %}
-            <table>
+      <h1 class="text-uppercase text-center display-4 title-form-register">Prestamos Solicitados</h1>
+  
+      <form method="post" action="{% url 'SITIO:Aceptar' %}">
+          {% csrf_token %}
+          <table>
               <tr>
-                <th></th>
-
-                <th>ID del empleado</th>
-
-                <th>Monto</th>
-               
-                <th>Fecha limite</th>
+                  <th></th>
+                  <th>ID del empleado</th>
+                  <th>Monto</th>
+                  <th>Fecha limite</th>
               </tr>
               {% for dato in datos %}
               <tr>
-                <td> <input type="radio" name="datos" value="{{ dato.id }}"> </td>
-                <td>{{ dato.usuario }}</td>
-                
-          
-              
-                
-                <td>{{ dato.Monto }}</td>
-                <td>{{ dato.FechaLimite }}</td>
-          
+                  <td><input type="radio" name="datos" value="{{ dato.id }}"></td>
+                  <td>{{ dato.nombre }}</td>
+                  <td>{{ dato.Monto }}</td>
+                  <td>{{ dato.FechaLimite }}</td>
+                  <input type="hidden" name="fecha_limite" value="{{ dato.FechaLimite }}">
+              </tr>
               {% endfor %}
-            </table>
-            <input type="submit" style="background-color: #007bff; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer;" value="Seleccionar elementos" disabled>
-          </form>
+          </table>
+          <input type="submit" style="background-color: #007bff; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer;" value="Seleccionar elementos" disabled>
+      </form>
+  </div>
+  
+  
+  
+  
+  
+  
           
           <script>
             document.addEventListener("DOMContentLoaded", function () {

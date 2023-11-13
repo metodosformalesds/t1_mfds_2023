@@ -22,6 +22,7 @@ from django.urls import reverse
 import paypalrestsdk
 from datetime import datetime
 from django.http import JsonResponse
+from django.contrib import messages
 
 """ 
     REGISTRO DE USUARIO
@@ -244,6 +245,7 @@ def acerca_de(request):
     
 def nominas(request):
     datos = empleados.objects.all()
+    usuario=request.user
  
     
 
@@ -258,7 +260,7 @@ def nominas(request):
       
     
     # Realiza la consulta filtrando por los nombres en la lista 'datos'
-         datos = empleados.objects.filter(id=datos)
+         datos = empleados.objects.filter(Nombre=usuario,id=datos)
 
          return render(request, 'sitio/nominas/transferenciaNomina.html', {'datos': datos})
     else:
@@ -284,6 +286,23 @@ def Aceptarprestamo(request):
         # Obten los datos enviados en el formulario (suponiendo que 'datos' es una lista de nombres)
          datos  = request.POST.getlist('datos')
          datos = datos[0]
+         
+            # Obten los datos enviados en el formulario (suponiendo que 'datos' es una lista de IDs)
+         dato_ids = request.POST.getlist('datos')
+
+         for dato_id in dato_ids:
+            # Filtra el objeto prestamos por ID
+            dato = prestamos.objects.get(id=dato_id)
+
+            # Obtén la fecha límite del objeto
+            fecha_limite = dato.FechaLimite
+
+            # Verifica si la fecha actual es superior a la fecha límite
+            if datetime.now().date() > fecha_limite:
+                # Realiza la operación de eliminación
+                dato.delete()
+                messages.success(request, 'ya paso de la fecha limite para ser aceptado el prestamo')
+                return redirect('SITIO:producto_index')
       
     
     # Realiza la consulta filtrando por los nombres en la lista 'datos'
@@ -310,12 +329,13 @@ def SolicitarPrestamo(request):
         
         # Convierte la fecha a un objeto Date
         fecha_limite = datetime.strptime(FechaLimite, '%Y-%m-%d').date()
+        nombre=request.user
         
       
 
         
 
-        prestamo = prestamos(Monto=Monto,FechaLimite=fecha_limite)
+        prestamo = prestamos(nombre=nombre,Monto=Monto,FechaLimite=fecha_limite)
         prestamo.save()  # Guarda los datos en la base de datos
         return redirect('SITIO:Prestamosolicitado')  # Redirige a la página que desees después de guardar el préstamo
 
