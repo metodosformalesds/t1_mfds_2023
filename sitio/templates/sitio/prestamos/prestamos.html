@@ -53,6 +53,9 @@
             <table>
               <tr>
                 <th></th>
+
+                <th>ID del empleado</th>
+
                 <th>Monto</th>
                
                 <th>Fecha limite</th>
@@ -60,6 +63,11 @@
               {% for dato in datos %}
               <tr>
                 <td> <input type="radio" name="datos" value="{{ dato.id }}"> </td>
+                <td>{{ dato.usuario }}</td>
+                
+          
+              
+                
                 <td>{{ dato.Monto }}</td>
                 <td>{{ dato.FechaLimite }}</td>
           

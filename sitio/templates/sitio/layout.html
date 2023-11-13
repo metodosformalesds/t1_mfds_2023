@@ -135,8 +135,14 @@
             h1 {
                 font-size: 24px;
             }
+            .icon-person {
+                font-size: 48px; /* Ajusta el tamaño según tus necesidades */
+                color: blue;    /* Cambia el color según tus necesidades */
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+
 </head>
 
 <body>
@@ -172,6 +178,9 @@
                 </g>
             </svg>
         </div>
+        
+        
+        
         <!-- Waves end -->
     </div>
     
@@ -191,6 +200,7 @@
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li class="nav-item active">
                         <a class="nav-link" href="/">Inicio</a>
+                        
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown"
@@ -215,11 +225,44 @@
             </div>
         </div>
         <div class="d-flex justify-content-center">
-            <div class="ml-auto d-flex">
+
+
+
+            {% if user.is_authenticated %}
+            {% if user.is_staff %}
+                <!-- Contenido específico para el personal -->
+                <div class="ml-auto d-flex">
+                    <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:perfilempleado' %}">
+                        <i class="fas fa-user icon-person"></i> Perfil de Empleado
+                    </a>
+                </div>
+            {% elif user.is_superuser %}
+                <!-- Contenido específico para el administrador -->
+                <div class="ml-auto d-flex">
+                    <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:perfiladmin' %}">
+                        <i class="fas fa-user icon-person"></i> Perfil de Administrador
+                    </a>
+                </div>
+            {% else %}
+                <!-- Contenido por defecto para el usuario normal -->
+                <div class="ml-auto d-flex">
+                    <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:perfil' %}">
+                        <i class="fas fa-user icon-person"></i> Mi Perfil
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+        
+           
+            
+            
+            
+
                 {% if user.is_staff %}
                 <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:Solicitar'%}">
                     Solicitar préstamo
                 </a>
+               
                 {% endif %}
                 {% if user.is_superuser %}
                 <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:nomina'%}">
@@ -235,6 +278,7 @@
                     <i class="fas fa-sign-out-alt"></i>
                 </a>
                 {% else %}
+                
                 <a role="button" class="btn btn-primary mr-3" href="{% url 'login'%}?next={{request.path}}">
                     Ingresar
                 </a>

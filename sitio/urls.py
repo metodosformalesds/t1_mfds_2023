@@ -6,7 +6,7 @@ urlpatterns = [
     # REGISTRAR USUARIO
        
        path('registrarse/', views.register, name="register"),
-       path('olvidar/', views.RecuperarContraseña, name="olvidar"),
+       
 
 
     # ACERCA DE
@@ -41,6 +41,15 @@ urlpatterns = [
     
     #carrito
     path('Pago/', views.proceso_pago, name="Pago"),
+    
+    #perfil
+    
+    path('Perfil/', views.perfil, name="perfil"),
+    path('Perfilempleado/', views.perfilempleado, name="perfilempleado"),
+    path('Perfiladmin/', views.perfiladmin, name="perfiladmin"),
+    
+    
+    
     
     
     

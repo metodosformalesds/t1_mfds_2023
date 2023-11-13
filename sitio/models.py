@@ -53,11 +53,14 @@ class empleados(models.Model):
 
 
 class prestamos(models.Model):
+    
+    
+    
+    
     Monto = models.IntegerField()
     TipoPago = models.CharField(max_length=90)
     FechaLimite = models.DateField()
-    prestamo=models.ForeignKey(Carrito, null=True,blank=True,on_delete=models.CASCADE)
-
+  
   
     
 

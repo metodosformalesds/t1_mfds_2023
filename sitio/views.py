@@ -275,6 +275,7 @@ def SolicitarNomina(request):
 
 def Aceptarprestamo(request):
      datos = prestamos.objects.all()
+    
      
 
      if request.method == 'POST':
@@ -301,6 +302,7 @@ def transferenciaPrestamo(request):
     
 def SolicitarPrestamo(request):
     
+    
     if request.method == 'POST':
         Monto = request.POST['Monto']
       
@@ -308,6 +310,8 @@ def SolicitarPrestamo(request):
         
         # Convierte la fecha a un objeto Date
         fecha_limite = datetime.strptime(FechaLimite, '%Y-%m-%d').date()
+        
+      
 
         
 
@@ -319,6 +323,9 @@ def SolicitarPrestamo(request):
 
 def Prestamosolicitado(request):
     return render(request,'sitio/prestamos/prestamoSolicitado.html')
+
+
+
 def proceso_pago(request):
     
     if request.method == 'POST':
@@ -356,10 +363,41 @@ def proceso_pago(request):
     return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', {'form': form,'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos,'paypal':paypal_payment})
 
 
+def perfil(request):
+    
+    usuario=request.user
+    
+    
+    return render(request,'sitio/perfil/usuario.html', {'usuario':usuario})
+    
+    
+  
+def perfilempleado(request):
+    
+    usuario=request.user
+    
+    
+    return render(request,'sitio/perfil/empleado.html', {'usuario':usuario})
+    
+    
+    
+ 
+def perfiladmin(request):
+    
+    usuario=request.user
+    
+    
+    return render(request,'sitio/perfil/admin.html', {'usuario':usuario})
+    
+    
+    
+    
+    
+   
+    
+  
+    
+    
 
-def RecuperarContraseña(request):
-    
-    
-    
-    return render(request,'templates/registration/password_reset_form.html')
-    
+
+
