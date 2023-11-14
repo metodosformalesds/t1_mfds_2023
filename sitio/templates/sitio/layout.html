@@ -233,21 +233,21 @@
                 <!-- Contenido específico para el personal -->
                 <div class="ml-auto d-flex">
                     <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:perfilempleado' %}">
-                        <i class="fas fa-user icon-person"></i> Perfil de Empleado
+                        <i class="fas fa-user icon-person"></i> 
                     </a>
                 </div>
             {% elif user.is_superuser %}
                 <!-- Contenido específico para el administrador -->
                 <div class="ml-auto d-flex">
                     <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:perfiladmin' %}">
-                        <i class="fas fa-user icon-person"></i> Perfil de Administrador
+                        <i class="fas fa-user icon-person"></i> 
                     </a>
                 </div>
             {% else %}
                 <!-- Contenido por defecto para el usuario normal -->
                 <div class="ml-auto d-flex">
                     <a role="button" class="btn btn-primary mr-3" href="{% url 'SITIO:perfil' %}">
-                        <i class="fas fa-user icon-person"></i> Mi Perfil
+                        <i class="fas fa-user icon-person"></i>
                     </a>
                 </div>
             {% endif %}
