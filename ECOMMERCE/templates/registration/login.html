@@ -1,0 +1,80 @@
+{% extends "registration/layout.html" %}
+
+{% load socialaccount %}
+{% providers_media_js %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row my-3">
+        <!-- ERRORES -->
+        {% if form.errors %}
+        <div class="alert alert-warning alert-dismissible fade show col-md-6 mx-auto" role="alert">
+            <strong>Usuario o contraseña incorrectos, vuelva a intentar.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- TITULO -->
+    <div class="row justify-content-center my-3">
+        <div class="col-12 text-center">
+            <h2 class="text-uppercase display-4">Inicia sesion</h2>
+        </div>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="/" />
+
+                <!-- USUARIO -->
+                <div class="form-group row">
+                    <label for="usuario" class="col-2 col-form-label">Usuario</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="usuario" name="username" autofocus autocapitalize="none"
+                            autocomplete="username" maxlength="150" required id="id_username">
+                    </div>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-2 col-form-label">Password</label>
+                    <div class="col-10">
+                        <input type="password" class="form-control" id="inputPassword" name="password"
+                            autocomplete="current-password" required id="id_password">
+                    </div>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="form-group row">
+                    <div class="col-4 offset-md-2">
+                        <button class="btn btn-success btn-block text-uppercase" type="submit">Login</button>
+                    </div>
+                    <div class="col-4">
+                        <a href="{% url 'SITIO:register' %}" class="btn btn-secondary btn-block text-uppercase">Registrarse</a>
+                    </div>
+                   
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Iniciar sesión con Google -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <button class="btn btn-outline-info btn-block">
+                <a href="{% provider_login_url 'google' %}?next=/">
+                    <i class="fab fa-google"></i>
+                    Iniciar sesión con Google
+                </a>
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
