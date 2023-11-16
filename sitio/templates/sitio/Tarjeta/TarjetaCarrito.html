@@ -98,8 +98,7 @@
                 {% endfor %}
 
                 <p>Total a pagar: {{carrito.total}} pesos<p>
-                
-            
+                    
     
                
             </div>
@@ -127,11 +126,19 @@
             <label for="id_codigo_seguridad">Código de seguridad (CVC, ejemplo: 123)</label> {{ form.codigo_seguridad }}
         </div>
         <button type="submit" class="btn btn-primary">Procesar Pago</button>
-        {{paypal.render}}
-    
-       
+
+         
     
     </form>
+    <div class="form-group">
+                 <h4>Paga con Paypal</h4>
+        <hr>{{paypal.render}}
+    </div>
+    
+
+
+
+    
     
 
 

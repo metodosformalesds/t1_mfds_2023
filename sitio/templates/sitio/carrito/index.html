@@ -25,6 +25,7 @@
                         
 
                     </p>
+                   
                     
                 </div>
             {% empty %}
@@ -43,19 +44,20 @@
           {% endif %}
         
        
-
+       
             <!-- BOTONES -->
             <div class="col-12 p-0 m-0 my-3 row ">
                 <div class="col-md-5 col-lg-3 p-0">
                     <a href="{% url 'SITIO:carrito_clean' %}" class="btn btn-danger btn-block">Vaciar Carrito</a>
                 </div>
-                
                 <div class="col-12 p-0 col-md-7 col-lg-4 mt-2 mt-md-0 pl-md-3">
                     
-                    <a role="button" class="btn btn-success btn-block"href="{% url 'SITIO:Pago'%}">
+                    <a role="button" class="btn btn-success btn-block"href="{% url 'SITIO:Pago' carrito.id %}">
                         Finalizar Compra
                     </a>
                 </div>
+                
+                
                 
 
 

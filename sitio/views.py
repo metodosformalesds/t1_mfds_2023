@@ -28,7 +28,10 @@ from django.shortcuts import render, redirect
 from .forms import FotoPerfilForm
 from PIL import Image
 
-
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+import uuid
+from django.urls import reverse
 """ 
     REGISTRO DE USUARIO
 """
@@ -355,8 +358,12 @@ def Prestamosolicitado(request):
 
 
 
-def proceso_pago(request):
-    
+
+
+
+def proceso_pago(request, product_id):
+
+    product = Carrito.objects.get(id=product_id)
     carrito=Carrito.objects.all()
     
     if request.method == 'POST':
@@ -367,7 +374,7 @@ def proceso_pago(request):
             # Redirige a una página de confirmación o realiza otras acciones
             """
     else:
-       form = PaymentForm()
+        form = PaymentForm()
     categorias = Categoria.objects.all()
     usuario_logeado = User.objects.get(username=request.user)
     productos = Carrito.objects.get(usuario=usuario_logeado.id).items.all()
@@ -378,20 +385,47 @@ def proceso_pago(request):
         nuevo_precio_Carrito += item.producto.precio
     carrito.total = nuevo_precio_Carrito
     carrito.save()
-    host= request.get_host()
-    paypal_checkout={
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount':Producto.precio,
-        'item_name': Producto.titulo,
-        'invoice':uuid.uuid4(),
-        'currency_code': 'USD',
-        'notify_url': f"https://{host}{reverse('paypal-ipn')}"
-        
-    }
-    paypal_payment=PayPalPaymentsForm(initial=paypal_checkout)
+    host = request.get_host()
     
+    print(product.total)
 
-    return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', {'form': form,'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos,'paypal':paypal_payment, 'carrito':carrito})
+    paypal_checkout = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': product.total,
+       
+        'invoice': uuid.uuid4(),
+        'currency_code': 'MXN',
+        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+    
+    }
+
+    paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
+
+    context = {
+        'product': product,
+        'paypal': paypal_payment,
+        'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos,'paypal':paypal_payment, 'carrito':carrito,'form':form,
+    }
+
+    return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', context)
+
+
+
+
+
+def PaymentSuccessful(request, carrito_id):
+
+    product = Producto.objects.get(id=carrito_id)
+
+    return render(request, 'payment-success.html', {'product': product})
+
+def paymentFailed(request, carrito_id):
+
+    product = Producto.objects.get(id=carrito_id)
+
+    return render(request, 'payment-failed.html', {'product': product})
+
+
 
 
 
