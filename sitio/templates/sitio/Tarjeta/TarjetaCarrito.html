@@ -96,11 +96,14 @@
                         </p>
                     </div>
                 {% endfor %}
-                {{paypal.render}}
+
+                <p>Total a pagar: {{carrito.total}} pesos<p>
+                
+            
     
                
             </div>
-    
+            
         </div>
     </main>
 
@@ -124,6 +127,8 @@
             <label for="id_codigo_seguridad">Código de seguridad (CVC, ejemplo: 123)</label> {{ form.codigo_seguridad }}
         </div>
         <button type="submit" class="btn btn-primary">Procesar Pago</button>
+        {{paypal.render}}
+    
        
     
     </form>

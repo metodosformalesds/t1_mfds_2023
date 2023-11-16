@@ -5,11 +5,12 @@ from django.urls import reverse
 from django.http.response import HttpResponse
 
 from sitio.models import *
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render
-from .forms import PaymentForm, TransferForm,EmpleadoForm
+from .forms import PaymentForm, TransferForm,EmpleadoForm,CambiarNombreUsuarioForm
 
 from allauth.account.decorators import login_required
 from django.db.models import Sum
@@ -19,10 +20,14 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
 from django.urls import reverse
-import paypalrestsdk
+
 from datetime import datetime
 from django.http import JsonResponse
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from .forms import FotoPerfilForm
+from PIL import Image
+
 
 """ 
     REGISTRO DE USUARIO
@@ -152,6 +157,9 @@ def productos_por_categoria(request, categoria_id):
 def carrito_index(request):
     categorias = Categoria.objects.all()
     usuario_logeado = request.user
+    total=0
+    
+    
 
     try:
         carrito = Carrito.objects.get(usuario=usuario_logeado)
@@ -169,7 +177,8 @@ def carrito_index(request):
     return render(request, 'sitio/carrito/index.html', {
         'categorias': categorias,
         'usuario': usuario_logeado,
-        'items_carrito': items_carrito
+        'items_carrito': items_carrito,
+        'carrito':carrito,
     })
 
 def carrito_save(request):
@@ -348,6 +357,8 @@ def Prestamosolicitado(request):
 
 def proceso_pago(request):
     
+    carrito=Carrito.objects.all()
+    
     if request.method == 'POST':
         form = PaymentForm(request.POST)
         """if form.is_valid():
@@ -380,34 +391,175 @@ def proceso_pago(request):
     paypal_payment=PayPalPaymentsForm(initial=paypal_checkout)
     
 
-    return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', {'form': form,'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos,'paypal':paypal_payment})
+    return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', {'form': form,'categorias' : categorias,'usuario' : usuario_logeado,'items_carrito' : productos,'paypal':paypal_payment, 'carrito':carrito})
+
 
 
 def perfil(request):
+    usuario = request.user
+    perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
+
+    if request.method == 'POST':
+        form = CambiarNombreUsuarioForm(request.POST)
+        if form.is_valid():
+            nuevo_nombre_usuario = form.cleaned_data['nuevo_nombre_usuario']
+            
+            # Verificar si el nuevo nombre de usuario ya existe
+            if User.objects.filter(username=nuevo_nombre_usuario).exists():
+                # Manejar el caso en el que el nuevo nombre de usuario ya existe
+                # Puedes mostrar un mensaje de error o redirigir a otra página
+                messages.error(request, 'El nuevo nombre de usuario ya está en uso.')
+            else:
+                # Si no existe, cambia el nombre de usuario y guarda los cambios
+                user = request.user
+                user.username = nuevo_nombre_usuario
+                user.save()
+                
+                # Redirigir a una página de éxito o a la misma página
+                messages.success(request, 'Nombre de usuario actualizado exitosamente.')
+                return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
+        form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
+        if form.is_valid():
+            # Redimensiona la imagen antes de guardarla
+            img = Image.open(form.cleaned_data['foto'])
+            img_resized = img.resize((200, 200))  # Ajusta el tamaño según tus necesidades
+            img_resized.save(perfil.foto.path)
+
+            form.save()
+
+            # Cambiar el nombre de usuario si se proporciona en el formulario
+            nuevo_nombre_usuario = form.cleaned_data.get('nuevo_nombre_usuario')
+            if nuevo_nombre_usuario:
+                if User.objects.filter(username=nuevo_nombre_usuario).exists():
+                    # El nuevo nombre de usuario ya está en uso, manejar el caso apropiado
+                    # (puedes mostrar un mensaje de error o redirigir a otra página)
+                    pass
+                else:
+                    # Cambia el nombre de usuario y guarda los cambios
+                    usuario.username = nuevo_nombre_usuario
+                    usuario.save()
+
+            # Redirige a la página de éxito o a la misma página
+            return render(request, 'sitio/perfil/usuario.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
+
+    else:
+        form = FotoPerfilForm(instance=perfil)
+
+    return render(request, 'sitio/perfil/usuario.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
     
-    usuario=request.user
+
     
-    
-    return render(request,'sitio/perfil/usuario.html', {'usuario':usuario})
-    
-    
-  
+# views.py
+
 def perfilempleado(request):
-    
-    usuario=request.user
-    
-    
-    return render(request,'sitio/perfil/empleado.html', {'usuario':usuario})
-    
-    
-    
+    usuario = request.user
+    perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
+
+    if request.method == 'POST':
+        form = CambiarNombreUsuarioForm(request.POST)
+        if form.is_valid():
+            nuevo_nombre_usuario = form.cleaned_data['nuevo_nombre_usuario']
+            
+            # Verificar si el nuevo nombre de usuario ya existe
+            if User.objects.filter(username=nuevo_nombre_usuario).exists():
+                # Manejar el caso en el que el nuevo nombre de usuario ya existe
+                # Puedes mostrar un mensaje de error o redirigir a otra página
+                messages.error(request, 'El nuevo nombre de usuario ya está en uso.')
+            else:
+                # Si no existe, cambia el nombre de usuario y guarda los cambios
+                user = request.user
+                user.username = nuevo_nombre_usuario
+                user.save()
+                
+                # Redirigir a una página de éxito o a la misma página
+                messages.success(request, 'Nombre de usuario actualizado exitosamente.')
+                return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
+        form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
+        if form.is_valid():
+            # Redimensiona la imagen antes de guardarla
+            img = Image.open(form.cleaned_data['foto'])
+            img_resized = img.resize((200, 200))  # Ajusta el tamaño según tus necesidades
+            img_resized.save(perfil.foto.path)
+
+            form.save()
+
+            # Cambiar el nombre de usuario si se proporciona en el formulario
+            nuevo_nombre_usuario = form.cleaned_data.get('nuevo_nombre_usuario')
+            if nuevo_nombre_usuario:
+                if User.objects.filter(username=nuevo_nombre_usuario).exists():
+                    # El nuevo nombre de usuario ya está en uso, manejar el caso apropiado
+                    # (puedes mostrar un mensaje de error o redirigir a otra página)
+                    pass
+                else:
+                    # Cambia el nombre de usuario y guarda los cambios
+                    usuario.username = nuevo_nombre_usuario
+                    usuario.save()
+
+            # Redirige a la página de éxito o a la misma página
+            return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
+
+    else:
+        form = FotoPerfilForm(instance=perfil)
+
+    return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
  
 def perfiladmin(request):
-    
-    usuario=request.user
-    
-    
-    return render(request,'sitio/perfil/admin.html', {'usuario':usuario})
+    usuario = request.user
+    perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
+
+    if request.method == 'POST':
+        form = CambiarNombreUsuarioForm(request.POST)
+        if form.is_valid():
+            nuevo_nombre_usuario = form.cleaned_data['nuevo_nombre_usuario']
+            
+            # Verificar si el nuevo nombre de usuario ya existe
+            if User.objects.filter(username=nuevo_nombre_usuario).exists():
+                # Manejar el caso en el que el nuevo nombre de usuario ya existe
+                # Puedes mostrar un mensaje de error o redirigir a otra página
+                messages.error(request, 'El nuevo nombre de usuario ya está en uso.')
+            else:
+                # Si no existe, cambia el nombre de usuario y guarda los cambios
+                user = request.user
+                user.username = nuevo_nombre_usuario
+                user.save()
+                
+                # Redirigir a una página de éxito o a la misma página
+                messages.success(request, 'Nombre de usuario actualizado exitosamente.')
+                return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
+        form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
+        if form.is_valid():
+            # Redimensiona la imagen antes de guardarla
+            img = Image.open(form.cleaned_data['foto'])
+            img_resized = img.resize((200, 200))  # Ajusta el tamaño según tus necesidades
+            img_resized.save(perfil.foto.path)
+
+            form.save()
+
+            # Cambiar el nombre de usuario si se proporciona en el formulario
+            nuevo_nombre_usuario = form.cleaned_data.get('nuevo_nombre_usuario')
+            if nuevo_nombre_usuario:
+                if User.objects.filter(username=nuevo_nombre_usuario).exists():
+                    # El nuevo nombre de usuario ya está en uso, manejar el caso apropiado
+                    # (puedes mostrar un mensaje de error o redirigir a otra página)
+                    pass
+                else:
+                    # Cambia el nombre de usuario y guarda los cambios
+                    usuario.username = nuevo_nombre_usuario
+                    usuario.save()
+
+            # Redirige a la página de éxito o a la misma página
+            return render(request, 'sitio/perfil/admin.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
+
+    else:
+        form = FotoPerfilForm(instance=perfil)
+
+    return render(request, 'sitio/perfil/admin.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
+
+  
+        
+        
+        
+
     
     
     

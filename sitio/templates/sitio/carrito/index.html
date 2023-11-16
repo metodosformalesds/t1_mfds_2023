@@ -22,7 +22,10 @@
                     <p class="d-flex justify-content-between align-items-center">
                         {{ forloop.counter }}. {{item.producto.titulo.title}} - ${{ item.producto.precio }}
                         <a href="{% url 'SITIO:item_carrito_delete' item.id %}">X</a>
+                        
+
                     </p>
+                    
                 </div>
             {% empty %}
                 <div class="col-12 p-0 m-0">
@@ -31,6 +34,15 @@
                     </p>
                 </div>
             {% endfor %}
+            {% if carrito.total is not None and carrito.total > 0 %}
+            <p class="d-flex justify-content-between align-items-center">
+              Total: {{ carrito.total }} pesos
+             </p>
+         {% else %}
+    
+          {% endif %}
+        
+       
 
             <!-- BOTONES -->
             <div class="col-12 p-0 m-0 my-3 row ">

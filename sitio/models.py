@@ -11,7 +11,13 @@ class Categoria(models.Model):
     def __str__(self) -> str:
         return f"Id: {self.pk} | Descripcion: {self.descripcion}"
 
+class PerfilEmpleado(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    foto = models.ImageField(upload_to='imagenes/productos/', blank=True, null=True)
 
+    def __str__(self):
+        return self.user.username
+    
 class Producto(models.Model):
     titulo = models.CharField(max_length=50, null=False)
     # Imagen
