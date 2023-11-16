@@ -115,6 +115,13 @@
                     <input class="input-field" type="text" name="nuevo_nombre_usuario" style="max-width: 150px; font-size: 14px;">
 
                     <input class="button" type="submit" value="Guardar cambios">
+                    {% if message %}
+        <p style="color: red;">{{ message }}</p>
+    {% endif %}
+    
+    {{ form.as_p }}
+    <button type="submit">Registrarse</button>
+                    
                 </form>
             </div>
         </div>
