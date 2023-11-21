@@ -430,10 +430,7 @@ def proceso_pago(request, product_id):
 def perfil(request):
     #agarrar el usuario que esta logeado con allauth o normal
     usuario = request.user
-    # El código anterior crea una nueva instancia del modelo `PerfilEmpleado` y la asocia con
-    # al objeto `usuario`. Si ya existe un objeto `EmployeeProfile` con el mismo `usuario`, se
-    # recuperar ese objeto en lugar de crear uno nuevo. La variable "creada" será "Verdadera" si
-    # Se creó un nuevo objeto y "False" si se recuperó un objeto existente.
+
     perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
 
     if request.method == 'POST':
@@ -491,10 +488,7 @@ def perfil(request):
 def perfilempleado(request):
     #agarrar el usuario que esta logeado con allauth o normal
     usuario = request.user
-    # El código anterior crea una nueva instancia del modelo `PerfilEmpleado` y la asocia con
-    # al objeto `usuario`. Si ya existe un objeto `EmployeeProfile` con el mismo `usuario`, se
-    # recuperar ese objeto en lugar de crear uno nuevo. La variable "creada" será "Verdadera" si
-    # Se creó un nuevo objeto y "False" si se recuperó un objeto existente.
+
     perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
 
     if request.method == 'POST':
@@ -548,10 +542,7 @@ def perfilempleado(request):
 def perfiladmin(request):
     #agarrar el usuario que esta logeado con allauth o normal
     usuario = request.user
-    # El código anterior crea una nueva instancia del modelo `PerfilEmpleado` y la asocia con
-    # al objeto `usuario`. Si ya existe un objeto `EmployeeProfile` con el mismo `usuario`, se
-    # recuperar ese objeto en lugar de crear uno nuevo. La variable "creada" será "Verdadera" si
-    # Se creó un nuevo objeto y "False" si se recuperó un objeto existente.
+
     perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
 
     if request.method == 'POST':
