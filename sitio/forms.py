@@ -7,21 +7,23 @@ from creditcards.forms import CardNumberField, CardExpiryField, SecurityCodeFiel
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 
+# Formulario para cambiar información del usuario
 class UsuarioChangeForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
 
+# Formulario para cambiar la foto de perfil del usuario
 class FotoPerfilForm(forms.ModelForm):
     class Meta:
         model = PerfilEmpleado
         fields = ['foto']
 
-       
+# Formulario para cambiar el nombre de usuario
 class CambiarNombreUsuarioForm(forms.Form):
-     nuevo_nombre_usuario = forms.CharField(label='Nuevo Nombre de Usuario', max_length=150)
+    nuevo_nombre_usuario = forms.CharField(label='Nuevo Nombre de Usuario', max_length=150)
 
-     def clean_nuevo_nombre_usuario(self):
+    def clean_nuevo_nombre_usuario(self):
         nuevo_nombre_usuario = self.cleaned_data['nuevo_nombre_usuario']
         
         # Verificar si el nuevo nombre de usuario ya existe
@@ -29,7 +31,8 @@ class CambiarNombreUsuarioForm(forms.Form):
             raise ValidationError('El nuevo nombre de usuario ya está en uso.')
         
         return nuevo_nombre_usuario
-     
+
+# Formulario para registrar un nuevo usuario
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     password1 = forms.CharField(widget=forms.PasswordInput)
@@ -39,27 +42,13 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-""" 
-    PRODUCTO 
-"""
+# Formulario para agregar un nuevo producto
 class FormProducto(forms.ModelForm):
-
     class Meta:
         model = Producto
-        fields = ('titulo','imagen','descripcion','precio','categoria')
-        """ widgets = {
-            'titulo': forms.TextInput(),
-            'descripcion' : forms.Textarea(),
-            'precio' : forms.NumberInput(),
-            'imagen' : forms.FileField()
-        } """
-        """ widgets = {
-            'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Ingrese el nombre del producto...' , 'required': True}),
-            'descripcion' : forms.Textarea(attrs={'class' : 'form-control', 'row' : 3, 'required': True}),
-            'precio' : forms.NumberInput(attrs={'class' : 'form-control', 'placeholder':'XXXX.XX', 'required': True}),
-            'imagen' : forms.FileField(attrs={'class':'form-control-file', 'id':'imagen', 'placeholder': 'Ingrese la imagen...', 'required': True})
-        } """
+        fields = ('titulo', 'imagen', 'descripcion', 'precio', 'categoria')
 
+# Formulario para procesar pagos
 class PaymentForm(forms.Form):
     nombre = forms.CharField(label='Nombre en la tarjeta', max_length=100)
     numero_tarjeta = CardNumberField(label='Número de tarjeta', max_length=16)
@@ -68,26 +57,19 @@ class PaymentForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        numero_tarjeta = cleaned_data.get('numero_tarjeta')
-        fecha_vencimiento = cleaned_data.get('fecha_vencimiento')
-        codigo_seguridad = cleaned_data.get('codigo_seguridad')
-
         # Puedes agregar validaciones personalizadas aquí si es necesario
-
         return cleaned_data
-    
+
+# Formulario para solicitar préstamos de empleados
 class EmpleadoForm(forms.ModelForm):
-    
     Monto = forms.CharField(max_length=100, label="Monto solicitado")
     TipoPago = forms.IntegerField(label="Sueldo a pagar")
+    
     class Meta:
         model = prestamos
-        fields = [ 'Monto', 'TipoPago']
-        
-       
-  
-    
-    
+        fields = ['Monto', 'TipoPago']
+
+# Formulario para realizar transferencias de empleados
 class TransferForm(forms.Form):
     empleado = forms.CharField(max_length=100, label="Nombre del empleado")
     puesto = forms.CharField(max_length=100, label="Puesto que proporciona")

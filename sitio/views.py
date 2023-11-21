@@ -43,10 +43,16 @@ def register(request):
             usuario_logeado = User.objects.last()
             #username = form.cleaned_data['username']
             messages.success(request, f"El usuario ha sido registrado exitosamente!")
+            # El código anterior crea una nueva instancia de la clase `Carrito` y la asigna al
+            # variable `carrito`. Luego establece el atributo `usuario` del objeto `carrito` al
+            # valor de la variable `usuario_logeado`. También establece el atributo "total" del
+            # objeto `carrito` a 0. Finalmente, guarda el objeto `carrito`.
             carrito = Carrito()
             carrito.usuario = usuario_logeado
             carrito.total = 0
             carrito.save()
+            # The above code is redirecting the user to the 'producto_index' page in the 'SITIO'
+            # application.
             return redirect('SITIO:producto_index')
         else:
             messages.success(request, "No se pudo registrar el usuario, vuelva a intenarlo!")
@@ -57,6 +63,8 @@ def register(request):
     PRODUCTOS
 """
 def producto_index(request):
+    # El código anterior recupera todas las instancias del modelo "Producto" de la base de datos y
+    # ordenarlos en orden descendente según su atributo "id".
     productos = Producto.objects.all().order_by("-id")
     
     return render(request, "sitio/producto/index.html", {
@@ -67,10 +75,14 @@ def producto_index(request):
 
 # PARA ADMINS/MODERADORES
 def producto_create(request):
+    #agarramos los datos de la categoria
     categorias = Categoria.objects.all()
     if request.method == "POST":
+        # El código anterior maneja una solicitud POST. Primero recupera la categoría seleccionada
         categoria_del_producto = Categoria.objects.get(id=request.POST["categoria"])
+         # producto de los datos de la solicitud. Luego, crea una instancia del formulario FormProducto
         form = FormProducto(request.POST, request.FILES, instance=Producto(imagen=request.FILES['imagen'], categoria=categoria_del_producto))   
+        # Datos POST y la categoría seleccionada. Si el formulario es válido, guarda los datos del formulario
         if form.is_valid():
             form.save()
             return redirect("SITIO:producto_index")
@@ -101,12 +113,15 @@ def producto_edit(request, producto_id):
         categoria_del_producto = Categoria.objects.get(id=request.POST["categoria"])
         form = FormProducto(request.POST, request.FILES, instance=Producto(imagen=request.FILES['imagen'], categoria=categoria_del_producto))   
         if form.is_valid():
+           # recuperar los valores de los campos del formulario (titulo, descripcion, imagen, precio)
             producto.titulo = request.POST['titulo']
             producto.categoria = categoria_del_producto
             producto.descripcion = request.POST['descripcion']
             producto.imagen = request.FILES['imagen']
             producto.precio = request.POST['precio']
+            # asignándolos a los atributos correspondientes de un objeto "producto". Luego, se guarda
             producto.save()
+            # el objeto a la base de datos y redirige al usuario a la página "producto_index".
             return redirect("SITIO:producto_index")
         else:
             return render(request, 'sitio/producto/edit.html', {
@@ -126,9 +141,12 @@ def producto_delete(request, producto_id):
     #return HttpResponse(f'Eliminar producto_id: {producto.id}')
 
 def producto_search(request):
+    # la entrada de texto del diccionario request.GET. Luego, utiliza la búsqueda `icontains` para filtrar el
     texto_de_busqueda = request.GET["texto"]
+  # Objetos `Producto` según si los campos `titulo` o `descripcion` contienen el texto dado.
     productosPorTitulo = Producto.objects.filter(titulo__icontains = texto_de_busqueda).all()
     productosPorDescripcion = Producto.objects.filter(descripcion__icontains = texto_de_busqueda).all()
+    # Finalmente, combina los resultados de ambos filtros usando el operador `|` y asigna el resultado
     productos = productosPorTitulo | productosPorDescripcion
     return render(request, 'sitio/producto/search.html',
     {
@@ -158,25 +176,27 @@ def productos_por_categoria(request, categoria_id):
 """
 @login_required
 def carrito_index(request):
+    # Obtener todas las categorías
     categorias = Categoria.objects.all()
+    #Obtener el usuario logeado
     usuario_logeado = request.user
+    #Inicializador de la variable
     total=0
-    
-    
-
     try:
         carrito = Carrito.objects.get(usuario=usuario_logeado)
         items_carrito = carrito.items.all()
+        # Calcular el nuevo precio total del carrito sumando los precios de los productos
         nuevo_precio_Carrito = items_carrito.aggregate(total=Sum('producto__precio'))['total']
     except Carrito.DoesNotExist:
+        # Si no existe el carrito para el usuario, inicializar variables 
         carrito = None
         items_carrito = []
         nuevo_precio_Carrito = 0
-
+    # Actualizar el precio total del carrito si existe
     if carrito:
         carrito.total = nuevo_precio_Carrito
         carrito.save()
-
+    # Renderizar la plantilla 'sitio/carrito/index.html' con la información necesaria
     return render(request, 'sitio/carrito/index.html', {
         'categorias': categorias,
         'usuario': usuario_logeado,
@@ -188,25 +208,27 @@ def carrito_save(request):
     #tieneCarrito = Carrito.objects.filter(usuario=8).count()
     # Devuelve un 404 si no encuentra el carrito
     #arrito = get_object_or_404(Carrito, usuario=usuario_logeado.id)
-
-    usuario_logeado = request.user
-    producto_id = request.POST.get('producto_id')
     
+    #agarramos el usuario logeado
+    usuario_logeado = request.user 
+    #agarramos el id del producto en especifico
+    producto_id = request.POST.get('producto_id')
+    #si no tiene la id procedemos a redireccionar ala index
     if not producto_id:
         return redirect("SITIO:producto_index")
-    
+    #por si tiene algun error
     producto = get_object_or_404(Producto, pk=producto_id)
-
+    #iniciamos un try cach
     try:
         carrito = Carrito.objects.get(usuario=usuario_logeado)
     except Carrito.DoesNotExist:
         carrito = Carrito.objects.create(usuario=usuario_logeado, total=Decimal('0.00'))
-
+     #guartdamos el item carrito y en create el producto en especifico
     item_carrito, created = Carrito_item.objects.get_or_create(carrito=carrito, producto=producto)
-
+    #iniciamos en 0 el carrito total si no tiene nada o si no produce un error
     if carrito.total is None:
         carrito.total = Decimal('0.00')
-
+    #procede a crear o mejor digamos lo mete en el carrito
     if created:
         carrito.total += producto.precio
         carrito.save()
@@ -217,35 +239,36 @@ def carrito_save(request):
     return redirect("SITIO:producto_index")
 
 def carrito_clean(request):
+    #agarramos el usuario logeado
     usuario_logeado = request.user
-
+    #iniciamos un try cach para ver si obtiene un error y si si procedemos a sacar un 0
     try:
         carrito = Carrito.objects.get(usuario=usuario_logeado)
     except Carrito.DoesNotExist:
         carrito = Carrito.objects.create(usuario=usuario_logeado, total=0)  # Inicializar total a 0
-
+    #limpiamos la base de datos
     carrito.items.all().delete()
+    #iniciamos el contador a 0
     carrito.total = 0
+    #guardamos
     carrito.save()
 
     return redirect('SITIO:carrito_index')
 
 def item_carrito_delete(request, item_carrito_id):
+    #agarramos un item en especifico de la base de datos
     item_carrito = Carrito_item.objects.get(id=item_carrito_id)
     carrito = item_carrito.carrito
-    
     # Vuelvo a calcular el precio del carrito
     nuevo_precio_Carrito = 0 - item_carrito.producto.precio
     for item in carrito.items.all():
         nuevo_precio_Carrito += item.producto.precio
-
     # Realizo los cambios en la base de datos
     carrito.total = nuevo_precio_Carrito
     item_carrito.delete()
     carrito.save()
     return redirect("SITIO:carrito_index")
     #return HttpResponse(f'Carrito_id: {carrito.id} Total: {carrito.total} | Item_carrito: {item_carrito} | Precio: {precio_item}')
-
 """
     PAGINAS
 """
@@ -254,47 +277,32 @@ def acerca_de(request):
         'categorias' : Categoria.objects.all(),
     })
     
-    
+#PROCESO DE LAS NOMINAS
 def nominas(request):
     datos = empleados.objects.all()
-    
- 
-    
-
-    
-  
-    if request.method == 'POST':
-         
-        
+    if request.method == 'POST': 
         # Obten los datos enviados en el formulario (suponiendo que 'datos' es una lista de nombres)
          datos  = request.POST.getlist('datos')
          datos = datos[0]
-      
-    
-    # Realiza la consulta filtrando por los nombres en la lista 'datos'
+        # Realiza la consulta filtrando por los nombres en la lista 'datos'
          datos = empleados.objects.filter(id=datos)
-
          return render(request, 'sitio/nominas/transferenciaNomina.html', {'datos': datos})
     else:
-       
         return render(request, 'sitio/nominas/nomina.html', {'datos': datos})
         
    
 
 def SolicitarNomina(request):
     if request.method == 'POST':
+        #iniciamos el formulario
         form = TransferForm(request.POST)
     return render(request, 'sitio/nominas/TransferenciaNomina.html', {'form': form})
     
-
+#PROCESOS DEL PRESTAMO
 def Aceptarprestamo(request):
+    #agarramos los elementos de prestamos
      datos = prestamos.objects.all()
-    
-     
-
-     if request.method == 'POST':
-         
-        
+     if request.method == 'POST':      
         # Obten los datos enviados en el formulario (suponiendo que 'datos' es una lista de nombres)
          datos  = request.POST.getlist('datos')
          datos = datos[0]
@@ -328,25 +336,20 @@ def Aceptarprestamo(request):
         
 def transferenciaPrestamo(request):
     if request.method == 'POST':
+        #llamamos el formulario empleado
         form = EmpleadoForm(request.POST)
     return render(request, 'sitio/nominas/transferenciaPrestamo.html', {'form': form})
     
 def SolicitarPrestamo(request):
     
-    
     if request.method == 'POST':
         Monto = request.POST['Monto']
-      
         FechaLimite = request.POST['FechaLimite']
-        
         # Convierte la fecha a un objeto Date
         fecha_limite = datetime.strptime(FechaLimite, '%Y-%m-%d').date()
+        #agarramos el usuario logeado
         nombre=request.user
-        
-      
-
-        
-
+        #mandamos los elementos a la base de datos prestamos        
         prestamo = prestamos(nombre=nombre,Monto=Monto,FechaLimite=fecha_limite)
         prestamo.save()  # Guarda los datos en la base de datos
         return redirect('SITIO:Prestamosolicitado')  # Redirige a la página que desees después de guardar el préstamo
@@ -356,16 +359,14 @@ def SolicitarPrestamo(request):
 def Prestamosolicitado(request):
     return render(request,'sitio/prestamos/prestamoSolicitado.html')
 
-
-
-
-
+#PROCESAR PAGO DE LA TARJETA Y DE PAYPAL
 
 def proceso_pago(request, product_id):
-
+    #procedemos agarrar un id determinado de la base de datos
     product = Carrito.objects.get(id=product_id)
+    #agarra todo los objetos del carrito
     carrito=Carrito.objects.all()
-    
+    #procedemos con el pago de la api para futuras versiones
     if request.method == 'POST':
         form = PaymentForm(request.POST)
         """if form.is_valid():
@@ -374,33 +375,48 @@ def proceso_pago(request, product_id):
             # Redirige a una página de confirmación o realiza otras acciones
             """
     else:
+       # inicializamos el payment
         form = PaymentForm()
+    #procede hacer el proceso de la api paypal
+    #agarramos los elementos de la base de datos de categorias
     categorias = Categoria.objects.all()
+    #Elemento usuario logeado actualmente
     usuario_logeado = User.objects.get(username=request.user)
+    #procedemos guardar en una varible los productos que estan en el carritos con un usuario determinado
     productos = Carrito.objects.get(usuario=usuario_logeado.id).items.all()
-
+    #metemos en una variable carrito el objeto
     carrito = Carrito.objects.get(usuario=usuario_logeado.id)
+    #inicializador
     nuevo_precio_Carrito = 0
+    #Recoremos el bucle del carrito
     for item in carrito.items.all():
         nuevo_precio_Carrito += item.producto.precio
     carrito.total = nuevo_precio_Carrito
+    #guardamos los elementos en el carrito
     carrito.save()
+    #utilizamos el host para proceder el api paypal
     host = request.get_host()
-    
+    #imprimimos el total de la compra
     print(product.total)
+    
+    #Proceso Paypal Checkout
 
     paypal_checkout = {
+        #Cuente donde ira el dinero
         'business': settings.PAYPAL_RECEIVER_EMAIL,
+        #el total que se cobrara
         'amount': product.total,
-       
+       #funcion para valorar
         'invoice': uuid.uuid4(),
+        #tipo de moneda
         'currency_code': 'MXN',
+        #coneccion del host de paypal
         'notify_url': f"http://{host}{reverse('paypal-ipn')}",
     
     }
-
+    #iniciacion del form del paypal
     paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
-
+    #llevamos todo los elementos al html
     context = {
         'product': product,
         'paypal': paypal_payment,
@@ -409,28 +425,15 @@ def proceso_pago(request, product_id):
 
     return render(request, 'sitio/Tarjeta/TarjetaCarrito.html', context)
 
-
-
-
-
-def PaymentSuccessful(request, carrito_id):
-
-    product = Producto.objects.get(id=carrito_id)
-
-    return render(request, 'payment-success.html', {'product': product})
-
-def paymentFailed(request, carrito_id):
-
-    product = Producto.objects.get(id=carrito_id)
-
-    return render(request, 'payment-failed.html', {'product': product})
-
-
-
-
-
+# VISTAS DE LOS PERFILES
+#PERFIL USUARIO 
 def perfil(request):
+    #agarrar el usuario que esta logeado con allauth o normal
     usuario = request.user
+    # El código anterior crea una nueva instancia del modelo `PerfilEmpleado` y la asocia con
+    # al objeto `usuario`. Si ya existe un objeto `EmployeeProfile` con el mismo `usuario`, se
+    # recuperar ese objeto en lugar de crear uno nuevo. La variable "creada" será "Verdadera" si
+    # Se creó un nuevo objeto y "False" si se recuperó un objeto existente.
     perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
 
     if request.method == 'POST':
@@ -483,10 +486,15 @@ def perfil(request):
     
 
     
-# views.py
+# PERFIL EMPLEADO
 
 def perfilempleado(request):
+    #agarrar el usuario que esta logeado con allauth o normal
     usuario = request.user
+    # El código anterior crea una nueva instancia del modelo `PerfilEmpleado` y la asocia con
+    # al objeto `usuario`. Si ya existe un objeto `EmployeeProfile` con el mismo `usuario`, se
+    # recuperar ese objeto en lugar de crear uno nuevo. La variable "creada" será "Verdadera" si
+    # Se creó un nuevo objeto y "False" si se recuperó un objeto existente.
     perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
 
     if request.method == 'POST':
@@ -536,9 +544,14 @@ def perfilempleado(request):
         form = FotoPerfilForm(instance=perfil)
 
     return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
- 
+ #PERFIL DEL SUPER USUARIO
 def perfiladmin(request):
+    #agarrar el usuario que esta logeado con allauth o normal
     usuario = request.user
+    # El código anterior crea una nueva instancia del modelo `PerfilEmpleado` y la asocia con
+    # al objeto `usuario`. Si ya existe un objeto `EmployeeProfile` con el mismo `usuario`, se
+    # recuperar ese objeto en lugar de crear uno nuevo. La variable "creada" será "Verdadera" si
+    # Se creó un nuevo objeto y "False" si se recuperó un objeto existente.
     perfil, created = PerfilEmpleado.objects.get_or_create(user=usuario)
 
     if request.method == 'POST':
