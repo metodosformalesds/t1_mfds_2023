@@ -43,10 +43,6 @@ def register(request):
             usuario_logeado = User.objects.last()
             #username = form.cleaned_data['username']
             messages.success(request, f"El usuario ha sido registrado exitosamente!")
-            # El código anterior crea una nueva instancia de la clase `Carrito` y la asigna al
-            # variable `carrito`. Luego establece el atributo `usuario` del objeto `carrito` al
-            # valor de la variable `usuario_logeado`. También establece el atributo "total" del
-            # objeto `carrito` a 0. Finalmente, guarda el objeto `carrito`.
             carrito = Carrito()
             carrito.usuario = usuario_logeado
             carrito.total = 0
@@ -62,6 +58,8 @@ def register(request):
 """ 
     PRODUCTOS
 """
+
+
 def producto_index(request):
     # El código anterior recupera todas las instancias del modelo "Producto" de la base de datos y
     # ordenarlos en orden descendente según su atributo "id".
