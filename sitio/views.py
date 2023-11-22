@@ -459,18 +459,6 @@ def perfil(request):
 
             form.save()
 
-            # Cambiar el nombre de usuario si se proporciona en el formulario
-            nuevo_nombre_usuario = form.cleaned_data.get('nuevo_nombre_usuario')
-            if nuevo_nombre_usuario:
-                if User.objects.filter(username=nuevo_nombre_usuario).exists():
-                    # El nuevo nombre de usuario ya está en uso, manejar el caso apropiado
-                    # (puedes mostrar un mensaje de error o redirigir a otra página)
-                    pass
-                else:
-                    # Cambia el nombre de usuario y guarda los cambios
-                    usuario.username = nuevo_nombre_usuario
-                    usuario.save()
-
             # Redirige a la página de éxito o a la misma página
             return render(request, 'sitio/perfil/usuario.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
 
@@ -517,18 +505,6 @@ def perfilempleado(request):
 
             form.save()
 
-            # Cambiar el nombre de usuario si se proporciona en el formulario
-            nuevo_nombre_usuario = form.cleaned_data.get('nuevo_nombre_usuario')
-            if nuevo_nombre_usuario:
-                if User.objects.filter(username=nuevo_nombre_usuario).exists():
-                    # El nuevo nombre de usuario ya está en uso, manejar el caso apropiado
-                    # (puedes mostrar un mensaje de error o redirigir a otra página)
-                    pass
-                else:
-                    # Cambia el nombre de usuario y guarda los cambios
-                    usuario.username = nuevo_nombre_usuario
-                    usuario.save()
-
             # Redirige a la página de éxito o a la misma página
             return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
 
@@ -570,19 +546,6 @@ def perfiladmin(request):
             img_resized.save(perfil.foto.path)
 
             form.save()
-
-            # Cambiar el nombre de usuario si se proporciona en el formulario
-            nuevo_nombre_usuario = form.cleaned_data.get('nuevo_nombre_usuario')
-            if nuevo_nombre_usuario:
-                if User.objects.filter(username=nuevo_nombre_usuario).exists():
-                    # El nuevo nombre de usuario ya está en uso, manejar el caso apropiado
-                    # (puedes mostrar un mensaje de error o redirigir a otra página)
-                    pass
-                else:
-                    # Cambia el nombre de usuario y guarda los cambios
-                    usuario.username = nuevo_nombre_usuario
-                    usuario.save()
-
             # Redirige a la página de éxito o a la misma página
             return render(request, 'sitio/perfil/admin.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
 
