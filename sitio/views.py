@@ -449,6 +449,7 @@ def perfil(request):
                 
                 # Redirigir a una página de éxito o a la misma página
                 messages.success(request, 'Nombre de usuario actualizado exitosamente.')
+                form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
                 return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
         form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
         if form.is_valid():
@@ -495,6 +496,7 @@ def perfilempleado(request):
                 
                 # Redirigir a una página de éxito o a la misma página
                 messages.success(request, 'Nombre de usuario actualizado exitosamente.')
+                form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
                 return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
         form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
         if form.is_valid():
@@ -537,6 +539,7 @@ def perfiladmin(request):
                 
                 # Redirigir a una página de éxito o a la misma página
                 messages.success(request, 'Nombre de usuario actualizado exitosamente.')
+                form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
                 return render(request, 'sitio/perfil/empleado.html', {'usuario': usuario, 'form': form, 'perfil': perfil})
         form = FotoPerfilForm(request.POST, request.FILES, instance=perfil)
         if form.is_valid():
