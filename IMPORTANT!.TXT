@@ -1,0 +1,6 @@
+No solo necesitas Requeriments tambien estos por medio del terminal
+pip install -r requirements.txt
+y luego esto
+pip install django-allauth
+pip install django-credit-cards
+pip install PyJWT

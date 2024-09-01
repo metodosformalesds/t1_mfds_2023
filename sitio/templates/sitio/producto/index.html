@@ -4,7 +4,18 @@
 <style>
     .card-img-producto-home {
         transition: transform 0.3s;
+        animation-name: floating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    margin-left: 30px;
+    margin-top: 5px;
         
+    }
+    @keyframes floating {
+        0% { transform: translate(0,  0px); }
+        50%  { transform: translate(0, 15px); }
+        100%   { transform: translate(0, -0px); }   
     }
 
     .card-img-producto-home:hover {
@@ -13,6 +24,12 @@
     }
     .card-img-3-producto-home{
         transition: transform 0.3s;
+        animation-name: floating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    margin-left: 30px;
+    margin-top: 5px;
     }
     .card-img-3-producto-home:hover{
         transform: scale(1.05);

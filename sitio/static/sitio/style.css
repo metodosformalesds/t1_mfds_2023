@@ -1,7 +1,9 @@
 .nav-logo {
     font-size: 1.4em;
 }
-
+body {
+    background-image: url('media/Fondo.png');
+}
 .logo-empresa-footer {
     font-size: 1.3em;
 }
