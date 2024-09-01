@@ -55,6 +55,9 @@ def register(request):
 
     return render(request, 'sitio/register.html')
 
+
+def logout(request):
+    return render(request,'sitio/logged_out.html')
 """ 
     PRODUCTOS
 """

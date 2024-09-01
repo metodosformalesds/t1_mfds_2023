@@ -6,7 +6,6 @@ urlpatterns = [
     # REGISTRAR USUARIO
        
        path('registrarse/', views.register, name="register"),
-       
 
 
     # ACERCA DE

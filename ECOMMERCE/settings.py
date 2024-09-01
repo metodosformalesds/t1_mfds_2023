@@ -148,6 +148,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/' # URL de la ruta de las imagenes
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Direccion de la imagen en mi proyecto
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL='/'
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 ACCOUNT_EMAIL_REQUIRED=True
 
